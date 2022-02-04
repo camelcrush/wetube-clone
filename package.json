@@ -7,10 +7,22 @@
     "type": "git",
     "url": "git+https://github.com/camelcrush/wetube-clone.git"
   },
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js"
+  },
   "author": "camelcrush",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/camelcrush/wetube-clone/issues"
   },
-  "homepage": "https://github.com/camelcrush/wetube-clone#readme"
+  "homepage": "https://github.com/camelcrush/wetube-clone#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.0",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "nodemon": "^2.0.15"
+  }
 }
