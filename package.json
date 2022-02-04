@@ -1,0 +1,16 @@
+{
+  "name": "wetube",
+  "version": "1.0.0",
+  "description": "Wetube Clone",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/camelcrush/wetube-clone.git"
+  },
+  "author": "camelcrush",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/camelcrush/wetube-clone/issues"
+  },
+  "homepage": "https://github.com/camelcrush/wetube-clone#readme"
+}
