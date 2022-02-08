@@ -1,3 +1,4 @@
+import "./db"; // 반드시 파일 자체를 import 해줘야함, server가 파일을 일고 db를 연결함.
 import express from "express";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouter";
