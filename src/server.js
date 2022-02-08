@@ -1,12 +1,8 @@
-import "./db"; // 반드시 파일 자체를 import 해줘야함, server가 파일을 일고 db를 연결함.
-import "./models/Video"; // 모델을 preload시킴, 반드시 db를 import한 후에..
 import express from "express";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouter";
 import videoRouter from "./routers/videoRouter";
 import userRouter from "./routers/userRouter";
-
-const PORT = 4000;
 
 const app = express();
 const logger = morgan("dev"); // morgan()은 함수를 리턴함
@@ -19,7 +15,6 @@ app.use("/", globalRouter); // 라우터 사용하기
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 
-const handleListening = () =>
-  console.log(`Server listening on port http://localhost:${PORT}`);
+export default app;
 
-app.listen(PORT, handleListening);
+// 서버파일은 express 관련된 것만 나타낼 수 있도록 init파일에 db를 넣고 분리시킴.
