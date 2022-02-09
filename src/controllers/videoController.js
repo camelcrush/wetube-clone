@@ -30,7 +30,17 @@ export const getUpload = (req, res) => {
   return res.render("upload", { pageTitle: "Upload Video" });
 };
 
-export const postUpload = (req, res) => {
-  const { title } = req.body;
+export const postUpload = async (req, res) => {
+  const { title, description, hashtags } = req.body;
+  Video.create({
+    title,
+    description,
+    createdAt: Date.now(),
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+    meta: {
+      views: 0,
+      ratings: 0,
+    },
+  });
   return res.redirect("/");
 };
