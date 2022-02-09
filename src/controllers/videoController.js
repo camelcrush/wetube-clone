@@ -1,13 +1,16 @@
 import Video from "../models/Video"; // 모델 import
 
-export const home = (req, res) => {
-  console.log("Start");
-  Video.find({}, (error, videos) => {
-    // model.find({}, callback): {}은 찾기조건인데 여기서는 모든 데이터를 찾고 함수를 실행한다는 것을 의미
-    console.log("Finished");
-    return res.render("home", { pageTitle: "Home", videos }); // callback에서 return을 함으로써 먼저 db로부터 데이터를 불러오고 난 후에 렌더링을 함
-  });
-  console.log("I finish first");
+/*
+console.log("start")
+Video.find({}, (error, videos) => {
+  return res.render("home", { pageTitle: "Home", videos });
+});
+console.log("finished")
+*/
+
+export const home = async (req, res) => {
+  const videos = await Video.find({});
+  return res.render("home", { pageTitle: "Home", videos });
 };
 export const watch = (req, res) => {
   const { id } = req.params;
