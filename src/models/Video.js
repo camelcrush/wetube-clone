@@ -12,6 +12,7 @@ const videoSchema = new mongoose.Schema({
 });
 
 videoSchema.static("formatHashtags", function (hashtags) {
+  //static function: 커스텀 함수를 만들 수 있음
   return hashtags
     .split(",")
     .map((word) => (word.startsWith("#") ? word : `#${word}`));
