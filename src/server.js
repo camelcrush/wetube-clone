@@ -4,6 +4,7 @@ import session from "express-session";
 import rootRouter from "./routers/rootRouter";
 import videoRouter from "./routers/videoRouter";
 import userRouter from "./routers/userRouter";
+import { localsMiddleWare } from "./middlewares";
 
 const app = express();
 const logger = morgan("dev"); // morgan()은 함수를 리턴함
@@ -15,13 +16,7 @@ app.use(express.urlencoded({ extended: true })); // express는 request post body
 
 app.use(session({ secret: "Hello!", resave: true, saveUninitialized: true })); // Session Middleware: session을 생성하여 정보를 기록, 생성한 session id를 브라우저로 보냄
 
-app.use((req, res, next) => {
-  req.sessionStore.all((error, sessions) => {
-    // 백엔드에서 생성한 세션들을 출력
-    console.log(sessions);
-    next();
-  });
-});
+app.use(localsMiddleWare); // session data를  브라우저 locals에 저장, pug는 locals data를 전역(global)으로 갖다 쓸 수 있음.
 
 app.use("/", rootRouter); // 라우터 사용하기
 app.use("/videos", videoRouter);

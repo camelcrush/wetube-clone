@@ -51,8 +51,8 @@ export const postLogin = async (req, res) => {
       .status(400)
       .render("login", { pageTitle, errorMessage: "Wrong password" });
   }
-  req.session.loggedIn = true;
-  req.session.user = user;
+  req.session.loggedIn = true; // session Id로 유저를 구별하여 그 세션에 로그인 정보를 저장
+  req.session.user = user; // session에 유저 정보를 저장
   return res.redirect("/");
 };
 export const edit = (req, res) => res.send("Edit User");
