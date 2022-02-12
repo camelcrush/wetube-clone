@@ -13,7 +13,7 @@ app.set("views", process.cwd() + "/src/views"); // views 디폴트값을 src폴�
 app.use(logger);
 app.use(express.urlencoded({ extended: true })); // express는 request post body data를 객체 형태로 변환하여 받기 위해 Middleware 설정이 필요함
 
-app.use(session({ secret: "Hello!", resave: true, saveUninitialized: true })); // express session 설정
+app.use(session({ secret: "Hello!", resave: true, saveUninitialized: true })); // Session Middleware: session을 생성하여 정보를 기록, 생성한 session id를 브라우저로 보냄
 
 app.use((req, res, next) => {
   req.sessionStore.all((error, sessions) => {
