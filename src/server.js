@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import session from "express-session";
 import rootRouter from "./routers/rootRouter";
 import videoRouter from "./routers/videoRouter";
 import userRouter from "./routers/userRouter";
@@ -11,6 +12,17 @@ app.set("view engine", "pug"); // view engine으로 pug 설정하기
 app.set("views", process.cwd() + "/src/views"); // views 디폴트값을 src폴더 안의 views폴더로 설정하기, cwd()는 current working directory
 app.use(logger);
 app.use(express.urlencoded({ extended: true })); // express는 request post body data를 객체 형태로 변환하여 받기 위해 Middleware 설정이 필요함
+
+app.use(session({ secret: "Hello!", resave: true, saveUninitialized: true })); // express session 설정
+
+app.use((req, res, next) => {
+  req.sessionStore.all((error, sessions) => {
+    // 백엔드에서 생성한 세션들을 출력
+    console.log(sessions);
+    next();
+  });
+});
+
 app.use("/", rootRouter); // 라우터 사용하기
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
