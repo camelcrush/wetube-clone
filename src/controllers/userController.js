@@ -116,6 +116,7 @@ export const finishGithubLogin = async (req, res) => {
     if (!user) {
       // 유저가 없는 경우 생성
       user = await User.create({
+        avatartUrl: userData?.avatar_url,
         name: userData?.name,
         username: userData?.login,
         email: emailObj?.email,
@@ -131,8 +132,11 @@ export const finishGithubLogin = async (req, res) => {
     return res.redirect("/login");
   }
 };
+export const logout = (req, res) => {
+  req.session.destroy(); // 세션 삭제 logout
+  return res.redirect("/");
+};
 
 export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Remove User");
-export const logout = (req, res) => res.send("Log out");
 export const see = (req, res) => res.send("See User");
