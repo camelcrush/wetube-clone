@@ -120,7 +120,7 @@ export const finishGithubLogin = async (req, res) => {
       return res.redirect("/");
     } else {
       // 유저가 없는 경우 생성
-      const user = User.create({
+      const user = await User.create({
         name: userData?.name,
         username: userData?.login,
         email: emailObj?.email,
