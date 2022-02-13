@@ -92,28 +92,45 @@ export const finishGithubLogin = async (req, res) => {
   if ("access_token" in tokenRequest) {
     const { access_token } = tokenRequest; // 받은 access_token을 보내서 유저 정보를 가져옴
     const apiUrl = "https://api.github.com";
-    const userData = await (
+    const userData = await // 유저정보 요청
+    (
       await fetch(`${apiUrl}/user`, {
         headers: {
           Authorization: `token ${access_token}`,
         },
       })
     ).json();
-    console.log(userData);
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         // 유저정보에서 email이 private하기 때문에 다른 api 경로로 email 요청
         headers: { Authorization: `token ${access_token}` },
       })
     ).json();
-    console.log(emailData);
     const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true // email array에서 해당 email 찾기
     );
     if (!emailObj) {
       return res.redirect("/login");
     }
-    console.log(email);
+    const existingUser = await User.findOne({ email: emailObj.email }); // 해당 email로 가입한 유저가 있는지 찾기
+    if (existingUser) {
+      // 유저가 있는 경우
+      (req.session.loggedIn = true), (req.session.user = existingUser);
+      return res.redirect("/");
+    } else {
+      // 유저가 없는 경우 생성
+      const user = User.create({
+        name: userData.name,
+        username: userData.login,
+        email: emailObj.email,
+        password: "",
+        socialOnly: true,
+        location: userData.location,
+      });
+      req.session.loggedIn = true;
+      req.session.user = user;
+      return res.redirect("/");
+    }
   } else {
     return res.redirect("/login");
   }
