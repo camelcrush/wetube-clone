@@ -17,14 +17,10 @@ app.use(express.urlencoded({ extended: true })); // express는 request post body
 
 app.use(
   session({
-    secret: "Hello!",
+    secret: process.env.COOKIE_SECRET,
     resave: false, // 모든 request마다 세션의 변경사항이 있든 없든 세션을 다시 저장할 것인가? > false:
     saveUninitialized: false, // session data가 초기화되지 않아도 저장할 것인가? > false : 메모리 절약, 로그인(에서 data수정 발생) 유저만 저장, 익명유저는 제외
-    cookie: {
-      // cookie 설정 가능: 쿠기 만료 기간, 사용자가 브라우저를 닫거나 종료하지 않은 이상 해당 기간만큼 쿠키가 저장되어 있음, expires와 maxAge 중에는 maxAge가 우선순위가 높음
-      maxAge: 20000, // 밀리세컨드 단위
-    },
-    store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/wetube" }), // DB에 session 저장, session collection이 생성되고 data가 저장됨
+    store: MongoStore.create({ mongoUrl: process.env.DB_URL }), // DB에 session 저장, session collection이 생성되고 data가 저장됨
   })
 ); // Session Middleware: session을 생성하여 정보를 기록, 생성한 session id를 브라우저로 보냄
 

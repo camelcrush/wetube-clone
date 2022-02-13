@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://127.0.0.1:27017/wetube"); // mongoose와 db를 연결
+mongoose.connect(process.env.DB_URL); // mongoose와 db를 연결
 
 const db = mongoose.connection; // db 불러오기
 
