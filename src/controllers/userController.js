@@ -115,17 +115,18 @@ export const finishGithubLogin = async (req, res) => {
     const existingUser = await User.findOne({ email: emailObj.email }); // 해당 email로 가입한 유저가 있는지 찾기
     if (existingUser) {
       // 유저가 있는 경우
-      (req.session.loggedIn = true), (req.session.user = existingUser);
+      req.session.loggedIn = true;
+      req.session.user = existingUser;
       return res.redirect("/");
     } else {
       // 유저가 없는 경우 생성
       const user = User.create({
-        name: userData.name,
-        username: userData.login,
-        email: emailObj.email,
+        name: userData?.name,
+        username: userData?.login,
+        email: emailObj?.email,
         password: "",
         socialOnly: true,
-        location: userData.location,
+        location: userData?.location,
       });
       req.session.loggedIn = true;
       req.session.user = user;
