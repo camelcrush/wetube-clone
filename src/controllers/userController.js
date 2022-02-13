@@ -66,7 +66,7 @@ export const startGithubLogin = (req, res) => {
   };
   const params = new URLSearchParams(config).toString(); // 객체를 url params 문자열 형태로 전환하기
   const finalUrl = `${baseUrl}?${params}`;
-  return res.redirect(finalUrl);
+  return res.redirect(finalUrl); // 클라이언트(사용자)를 github으로 보내기
 };
 
 export const finishGithubLogin = async (req, res) => {
@@ -76,10 +76,12 @@ export const finishGithubLogin = async (req, res) => {
     client_secret: process.env.GH_SECRET,
     code: req.query.code,
   };
+  // 클라이언트가 승인하면 깃헙에 등록한 callback 주소로 코드롤 보냄.
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
   // 헤더에 포함해야먄 json 데이터를 받을 수 있음
-  const tokenRequest = await (
+  const tokenRequest = await // 받은 코드를 보내 access_token 요청을 함
+  (
     await fetch(finalUrl, {
       method: "POST",
       headers: {
@@ -88,15 +90,30 @@ export const finishGithubLogin = async (req, res) => {
     })
   ).json();
   if ("access_token" in tokenRequest) {
-    const { access_token } = tokenRequest;
-    const userRequest = await (
-      await fetch("https://api.github.com/user", {
+    const { access_token } = tokenRequest; // 받은 access_token을 보내서 유저 정보를 가져옴
+    const apiUrl = "https://api.github.com";
+    const userData = await (
+      await fetch(`${apiUrl}/user`, {
         headers: {
           Authorization: `token ${access_token}`,
         },
       })
     ).json();
-    console.log(userRequest);
+    console.log(userData);
+    const emailData = await (
+      await fetch(`${apiUrl}/user/emails`, {
+        // 유저정보에서 email이 private하기 때문에 다른 api 경로로 email 요청
+        headers: { Authorization: `token ${access_token}` },
+      })
+    ).json();
+    console.log(emailData);
+    const emailObj = emailData.find(
+      (email) => email.primary === true && email.verified === true // email array에서 해당 email 찾기
+    );
+    if (!emailObj) {
+      return res.redirect("/login");
+    }
+    console.log(email);
   } else {
     return res.redirect("/login");
   }
