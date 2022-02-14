@@ -141,6 +141,23 @@ export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
 export const postEdit = (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { name, email, username, location },
+  } = req;
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true } // new 옵션을 통해 findbyIdAndUpdate는 업데이트돈 유저를 반환한다. default는 업데이트 되기 전
+  );
+  req.session.user = updatedUser; // 세션에 유저 업데이트 해주기
   return res.render("edit-profile");
 };
 export const edit = (req, res) => res.send("Edit User");
