@@ -140,7 +140,7 @@ export const logout = (req, res) => {
 export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
-export const postEdit = (req, res) => {
+export const postEdit = async (req, res) => {
   const {
     session: {
       user: { _id },
@@ -160,6 +160,39 @@ export const postEdit = (req, res) => {
   req.session.user = updatedUser; // 세션에 유저 업데이트 해주기
   return res.render("edit-profile");
 };
-export const edit = (req, res) => res.send("Edit User");
+
+export const getChangePassword = (req, res) => {
+  if (req.session.user.socialOnly === true) {
+    // 소셜로그인 유저는 비밀번호를 바꿀 수 없으므로 redirect
+    return res.redirect("/");
+  }
+  return res.render("users/change-password", { pageTitle: "Change Password" });
+};
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
+  } = req;
+  const user = await User.findById(_id);
+  const ok = await bcrypt.compare(oldPassword, user.password); // db password와 사용자 입력 password 비교
+  if (!ok) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "The current password is incorrect",
+    });
+  }
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "The password does not match the confirmation",
+    });
+  }
+  user.password = newPassword;
+  await user.save(); // save()를 써서 userSchem.pre("save")를 발동시킬 수 있음.
+  req.session.destroy(); // 세션 삭제
+  return res.redirect("/users/logout");
+};
 export const remove = (req, res) => res.send("Remove User");
 export const see = (req, res) => res.send("See User");
