@@ -26,4 +26,16 @@ export const publicOnlyMiddleware = (req, res, next) => {
 };
 
 // multer Middleware: 파일을 uploads에 저장하고 그에 대하 정보를 컨트롤러에 넘겨줌 req.file에서 확인할 수 있음
-export const uploadFiles = multer({ dest: "uploads" });
+// Limit fileSize: 설정크키 byte
+export const avatarUpload = multer({
+  dest: "uploads/avatars",
+  limits: {
+    fileSize: 3000000,
+  },
+});
+export const videoUpload = multer({
+  dest: "uploads/videos",
+  limits: {
+    fileSize: 100000000,
+  },
+});

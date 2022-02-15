@@ -12,7 +12,7 @@ import {
 import {
   protectorMiddleware,
   publicOnlyMiddleware,
-  uploadFiles,
+  avatarUpload,
 } from "../middlewares";
 
 const userRouter = express.Router();
@@ -22,7 +22,7 @@ userRouter
   .route("/edit")
   .all(protectorMiddleware)
   .get(getEdit)
-  .post(uploadFiles.single("avatar"), postEdit); // 필드이름 avatar는 form name과 같아야함
+  .post(avatarUpload.single("avatar"), postEdit); // 필드이름 avatar는 form name과 같아야함
 userRouter
   .route("/change-password")
   .get(getChangePassword)
