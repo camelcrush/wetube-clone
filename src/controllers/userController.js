@@ -143,13 +143,15 @@ export const getEdit = (req, res) => {
 export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id },
+      user: { _id, avatarUrl },
     },
     body: { name, email, username, location },
+    file,
   } = req;
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
+      avatarUrl: file ? file.path : avatarUrl,
       name,
       email,
       username,
@@ -158,7 +160,7 @@ export const postEdit = async (req, res) => {
     { new: true } // new 옵션을 통해 findbyIdAndUpdate는 업데이트돈 유저를 반환한다. default는 업데이트 되기 전
   );
   req.session.user = updatedUser; // 세션에 유저 업데이트 해주기
-  return res.render("edit-profile");
+  return res.redirect("/users/edit");
 };
 
 export const getChangePassword = (req, res) => {

@@ -25,7 +25,7 @@ app.use(
 ); // Session Middleware: session을 생성하여 정보를 기록, 생성한 session id를 브라우저로 보냄
 
 app.use(localsMiddleware); // session data를  브라우저 locals에 저장, pug는 locals data를 전역(global)으로 갖다 쓸 수 있음.
-
+app.use("/uploads", express.static("uploads")); // static 설정: 해당 url(uploads폴더)로 브라우저가 읽을 수 있도록 설정함.
 app.use("/", rootRouter); // 라우터 사용하기
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);

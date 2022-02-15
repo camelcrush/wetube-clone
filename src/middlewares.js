@@ -1,3 +1,5 @@
+import multer from "multer";
+
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn); // 로그인 정보를 브라우저 로컬 저장소에 저장
   res.locals.loggedInUser = req.session.user || {}; // 유저정보를 브라우저 로컬 저장소에 저장 // or 연산자 ||
@@ -22,3 +24,6 @@ export const publicOnlyMiddleware = (req, res, next) => {
     return res.redirect("/");
   }
 };
+
+// multer Middleware: 파일을 uploads에 저장하고 그에 대하 정보를 컨트롤러에 넘겨줌 req.file에서 확인할 수 있음
+export const uploadFiles = multer({ dest: "uploads" });
