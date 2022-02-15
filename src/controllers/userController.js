@@ -196,5 +196,12 @@ export const postChangePassword = async (req, res) => {
   req.session.destroy(); // 세션 삭제
   return res.redirect("/users/logout");
 };
-export const remove = (req, res) => res.send("Remove User");
-export const see = (req, res) => res.send("See User");
+
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "User not found." });
+  }
+  return res.render("users/profile", { pageTitle: "Profile", user });
+};
