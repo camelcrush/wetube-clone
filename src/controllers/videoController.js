@@ -7,7 +7,7 @@ export const home = async (req, res) => {
 };
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id).populate("owner"); // populate는 relation 데이터를 추가해 줌.
+  const video = await Video.findById(id).populate("owner"); // populate(필드명)는 relation 데이터를 추가해 줌.
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video is not found" });
   }
@@ -47,13 +47,16 @@ export const postUpload = async (req, res) => {
   const { path: fileUrl } = req.file;
   const { title, description, hashtags } = req.body;
   try {
-    Video.create({
+    const newVideo = await Video.create({
       title,
       description,
       fileUrl,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });
+    const user = await User.findById(_id);
+    user.videos.push(newVideo._id); // 유저 객체에 비디오 추가
+    user.save(); // save() 함수를 씀으로써 pre()가 발동하고 password가 다시 hash 되는 버그가 발생함으로 고쳐야 함
     return res.redirect("/");
   } catch (error) {
     console.log(error);

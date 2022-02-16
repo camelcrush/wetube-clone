@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
   password: { type: String },
   name: { type: String, require: true },
   location: { type: String },
+  videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }], // ref: 모델명
 });
 
 userSchema.pre("save", async function () {
