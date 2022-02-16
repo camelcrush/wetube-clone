@@ -15,16 +15,27 @@ export const watch = async (req, res) => {
 };
 export const getEdit = async (req, res) => {
   const { id } = req.params;
+  const {
+    user: { _id },
+  } = req.session;
   const video = await Video.findById(id);
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video is not found" });
   }
+  if (String(video.owner) !== String(_id)) {
+    // video.owner는 type이 object로 분류 되기 때문에 문자열안 _id와 비교하면 다르다고 나옴 따라서 String()을 써서 문자열로 바꿔야함
+    // _id는 문자열이긴 하지만 그냥 확실히 하기 위해서 String()을 썼음
+    return res.status(403).redirect("/");
+  }
   return res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
 };
 export const postEdit = async (req, res) => {
+  const {
+    user: { _id },
+  } = req.session;
   const { id } = req.params;
   const { title, description, hashtags } = req.body;
-  const video = await Video.exists({ _id: id }); // exists({}): 필터 조건으로 true or false 리턴
+  const video = await Video.findById(id);
   if (!video) {
     return res.render("404", { pageTitle: "Video is not found" });
   }
@@ -33,6 +44,9 @@ export const postEdit = async (req, res) => {
     description,
     hashtags: Video.formatHashtags(hashtags),
   });
+  if (String(video.owner) !== String(_id)) {
+    return res.status(403).redirect("/");
+  }
   return res.redirect(`/videos/${id}`);
 };
 
@@ -69,6 +83,16 @@ export const postUpload = async (req, res) => {
 
 export const deleteVideo = async (req, res) => {
   const { id } = req.params;
+  const {
+    user: { _id },
+  } = req.session;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.status(404).render("404", { pageTitle: "Video not found." });
+  }
+  if (String(video.owner) !== String(_id)) {
+    return res.status(403).redirect("/");
+  }
   await Video.findByIdAndDelete(id);
   return res.redirect("/");
 };

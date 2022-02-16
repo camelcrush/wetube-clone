@@ -13,7 +13,10 @@ const userSchema = mongoose.Schema({
 });
 
 userSchema.pre("save", async function () {
-  this.password = await bcrypt.hash(this.password, 5);
+  if (this.isModified("password")) {
+    // password 정보가 변경 되었을 때만 해쉬화 조건을 걸어서 user.save() 발동해도 해시가 안되게끔 설정
+    this.password = await bcrypt.hash(this.password, 5);
+  }
 });
 
 const User = mongoose.model("User", userSchema);
