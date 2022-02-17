@@ -94,6 +94,7 @@ export const deleteVideo = async (req, res) => {
     return res.status(403).redirect("/");
   }
   await Video.findByIdAndDelete(id);
+  user.videos.splice(user.videos.indexOf(id), 1); // user videos 삭제
   return res.redirect("/");
 };
 
