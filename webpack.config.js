@@ -1,12 +1,18 @@
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // js로부터 css를 추출하는 플러그인
 const path = require("path");
 
 module.exports = {
   entry: "./src/client/js/main.js", // src에 있는 변환할 코드
   mode: "development", // mode: dev인지 product인지에 따라 컴파일되는 코드 결과가 달라짐, 개발중일 땐 개발 모드
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "css/styles.css",
+    }),
+  ],
   output: {
     // 결과물
-    filename: "main.js",
-    path: path.resolve(__dirname, "assets", "js"), // 절대경로(full 주소)... path.resolve()는 경로를 만들어줌
+    filename: "js/main.js",
+    path: path.resolve(__dirname, "assets"), // 절대경로(full 주소)... path.resolve()는 경로를 만들어줌
   },
   module: {
     rules: [
@@ -21,7 +27,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: ["style-loader", "css-loader", "sass-loader"], // webpack은 배열의 역순으로 컴파일함
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"], // webpack은 배열의 역순으로 컴파일함
       },
     ],
   },
