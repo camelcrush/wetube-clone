@@ -26,6 +26,7 @@ app.use(
 
 app.use(localsMiddleware); // session data를  브라우저 locals에 저장, pug는 locals data를 전역(global)으로 갖다 쓸 수 있음.
 app.use("/uploads", express.static("uploads")); // static 설정: 해당 url(uploads폴더)로 브라우저가 읽을 수 있도록 설정함.
+app.use("/static", express.static("assets")); // express static을 통해 assets 폴더를 해당 url로 노출시킴
 app.use("/", rootRouter); // 라우터 사용하기
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
