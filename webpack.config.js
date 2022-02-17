@@ -19,6 +19,10 @@ module.exports = {
           },
         },
       },
+      {
+        test: /\.scss$/,
+        use: ["style-loader", "css-loader", "sass-loader"], // webpack은 배열의 역순으로 컴파일함
+      },
     ],
   },
 };
