@@ -4,6 +4,7 @@ const path = require("path");
 module.exports = {
   entry: "./src/client/js/main.js", // src에 있는 변환할 코드
   mode: "development", // mode: dev인지 product인지에 따라 컴파일되는 코드 결과가 달라짐, 개발중일 땐 개발 모드
+  watch: true, // watch
   plugins: [
     new MiniCssExtractPlugin({
       filename: "css/styles.css",
@@ -13,6 +14,7 @@ module.exports = {
     // 결과물
     filename: "js/main.js",
     path: path.resolve(__dirname, "assets"), // 절대경로(full 주소)... path.resolve()는 경로를 만들어줌
+    clean: true, // 빌드할 때 기존 것을 삭제한 후 다시 컴파일 설정
   },
   module: {
     rules: [

@@ -8,8 +8,8 @@
     "url": "git+https://github.com/camelcrush/wetube-clone.git"
   },
   "scripts": {
-    "dev": "nodemon --exec babel-node src/init.js",
-    "assets": "webpack --config webpack.config.js"
+    "dev-server": "nodemon",
+    "dev-assets": "webpack"
   },
   "author": "camelcrush",
   "license": "MIT",
