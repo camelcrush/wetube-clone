@@ -2,7 +2,9 @@ import User from "../models/User";
 import Video from "../models/Video"; // 모델 import
 
 export const home = async (req, res) => {
-  const videos = await Video.find({}).sort({ createdAt: "desc" });
+  const videos = await Video.find({})
+    .sort({ createdAt: "desc" })
+    .populate("owner");
   return res.render("home", { pageTitle: "Home", videos });
 };
 export const watch = async (req, res) => {
@@ -106,7 +108,7 @@ export const search = async (req, res) => {
       title: {
         $regex: new RegExp(keyword, "i"), // 정규표현식: i는 대소문자구분 없이 검색, ^${}: startsWith, ${}$: 끝 단어 검색
       },
-    });
+    }).populate("owner");
   }
   return res.render("search", { pageTitle: "Search", videos });
 };
