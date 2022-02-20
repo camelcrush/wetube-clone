@@ -126,11 +126,17 @@ const handleVideoClick = () => {
   handlePlayClick();
 };
 
+const handleEnded = () => {
+  const { id } = videoContainer.dataset; // HTML element에 저장한 data-id attribute를 dataset으로 불러올 수 있음
+  fetch(`/api/videos/${id}/view`, { method: "POST" });
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
-video.addEventListener("loadeddata", handleLoadedMetadata); // loadeddata는 비디오 이미지 외 비디오 데이타, 미디어의 첫번째 프레임이 로딩 완료된 시점에 발생.ex) 시간
+video.addEventListener("loadedmetadata", handleLoadedMetadata); // loadedmetadata는 비디오 이미지 외 비디오 데이타, 미디어의 첫번째 프레임이 로딩 완료된 시점에 발생.ex) 시간
 video.addEventListener("timeupdate", handleTimeUpdate); // currentTime 속성이 변경되는 시점부터 발생
+video.addEventListener("ended", handleEnded); // 비디오가 끝날 때 발생
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
 videoContainer.addEventListener("mousemove", handleMouseMove);
