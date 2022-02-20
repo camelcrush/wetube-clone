@@ -7,7 +7,10 @@ const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
 const videoContainer = document.getElementById("videoContainer");
 const fullScreenBtn = document.getElementById("fullScreen");
+const videoControls = document.getElementById("videoControls");
 
+let controlsTimeout = null; // Timeout 전역변수 설정
+let controlsMovementTimeout = null; // mouse timeout 전역변수 설정
 let volumeValue = 0.5; // 글로벌 변수 설정, pug 템플릿 default값
 video.volume = volumeValue; // 디폴트값을 비디오 볼륨에 적용
 
@@ -86,6 +89,27 @@ const handleFullScreen = () => {
   }
 };
 
+const hideControls = () => videoControls.classList.remove("showing");
+
+const handleMouseMove = () => {
+  if (controlsTimeout) {
+    clearTimeout(controlsTimeout);
+    controlsTimeout = null;
+  }
+  if (controlsMovementTimeout) {
+    // 만약 마우수를 계속 움직인다면 controlsMovementTimeout 실행 취소
+    clearTimeout(controlsMovementTimeout);
+    controlsMovementTimeout = null;
+  }
+  videoControls.classList.add("showing");
+  controlsMovementTimeout = setTimeout(hideControls, 3000); // 마우스가 멈추면 컨트롤을 숨기는 타임아웃 실행
+};
+
+const handleMouseLeave = () => {
+  // setTimeout은 자기 id 값을 반환하고 id를 통해 clearTimeout()을 할 수 있음
+  controlsTimeout = setTimeout(hideControls, 3000);
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -93,3 +117,5 @@ video.addEventListener("loadedmetadata", handleLoadedMetadata); // loadedmetadat
 video.addEventListener("timeupdate", handleTimeUpdate); // currentTime 속성이 변경되는 시점부터 발생
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
+video.addEventListener("mousemove", handleMouseMove);
+video.addEventListener("mouseleave", handleMouseLeave);
