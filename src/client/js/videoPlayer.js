@@ -115,6 +115,17 @@ const handleMouseLeave = () => {
   controlsTimeout = setTimeout(hideControls, 3000);
 };
 
+const handleSpacebar = (event) => {
+  if (event.keyCode == 32) {
+    // spacebar keycode값 32
+    handlePlayClick();
+  }
+};
+
+const handleVideoClick = () => {
+  handlePlayClick();
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -124,3 +135,5 @@ timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
+document.addEventListener("keydown", handleSpacebar); // video 재생 spacebar eventListener
+video.addEventListener("click", handleVideoClick); // video 재생 video 화면 클릭 eventListener
