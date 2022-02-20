@@ -4,6 +4,7 @@ const muteBtn = document.getElementById("mute");
 const volumeRange = document.getElementById("volume");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
+const timeline = document.getElementById("timeline");
 
 let volumeValue = 0.5; // 글로벌 변수 설정, pug 템플릿 default값
 video.volume = volumeValue; // 디폴트값을 비디오 볼륨에 적용
@@ -57,10 +58,19 @@ const formatTime = (seconds) => {
 
 const handleLoadedMetadata = () => {
   totalTime.innerText = formatTime(Math.floor(video.duration));
+  timeline.max = Math.floor(video.duration); // range 최대값 설정
 };
 
 const handleTimeUpdate = () => {
   currentTime.innerText = formatTime(Math.floor(video.currentTime));
+  timeline.value = Math.floor(video.currentTime); // video currentTime 타임라인값에 적용
+};
+
+const handleTimelineChange = (event) => {
+  const {
+    target: { value },
+  } = event;
+  video.currentTime = value;
 };
 
 playBtn.addEventListener("click", handlePlayClick);
@@ -68,3 +78,4 @@ muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("loadedmetadata", handleLoadedMetadata); // loadedmetadata는 비디오 이미지 외 비디오 데이타, 미디어의 첫번째 프레임이 로딩 완료된 시점에 발생.ex) 시간
 video.addEventListener("timeupdate", handleTimeUpdate); // currentTime 속성이 변경되는 시점부터 발생
+timeline.addEventListener("input", handleTimelineChange);
