@@ -6,6 +6,7 @@ module.exports = {
     // 여러 js 파일 소스 설정
     main: "./src/client/js/main.js",
     videoPlayer: "./src/client/js/videoPlayer.js",
+    recorder: "./src/client/js/recorder.js",
   }, // src에 있는 변환할 코드
   mode: "development", // mode: dev인지 product인지에 따라 컴파일되는 코드 결과가 달라짐, 개발중일 땐 개발 모드
   watch: true, // watch
