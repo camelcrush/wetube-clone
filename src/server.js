@@ -16,6 +16,12 @@ app.set("views", process.cwd() + "/src/views"); // views 디폴트값을 src폴�
 app.use(logger);
 app.use(express.urlencoded({ extended: true })); // express는 request post body data를 객체 형태로 변환하여 받기 위해 Middleware 설정이 필요함
 
+app.use((req, res, next) => {
+  res.header("Cross-Origin-Embedder-Policy", "require-corp");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
+
 app.use(
   session({
     secret: process.env.COOKIE_SECRET,
