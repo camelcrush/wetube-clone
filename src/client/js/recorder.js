@@ -21,21 +21,39 @@ const handleDownload = async () => {
 
   // mp4로 converting
   await ffmpeg.run("-i", "recording.webm", "-r", "60", "output.mp4");
+  await ffmpeg.run(
+    "-i",
+    "recording.webm",
+    "-ss",
+    "00:00:01",
+    "-frames:v",
+    "1",
+    "thumbnail.jpg"
+  );
 
   // 파일시스템으로부터 mp4 output 불러오기(binary data)
   const mp4File = ffmpeg.FS("readFile", "output.mp4");
+  const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
 
   // 브라우저가 이해할 수 있는 blob 파일로 전환(mp4File.buffer 필수)
   const mp4Blob = new Blob([mp4File.buffer], { type: "video/mp4" });
+  const thumbBlob = new Blob([thumbFile.buffer], { type: "image/jpg" });
 
   // blob을 URL 형싱으로 변환
   const mp4Url = URL.createObjectURL(mp4Blob);
+  const thumbUrl = URL.createObjectURL(thumbBlob);
 
   const a = document.createElement("a");
   a.href = mp4Url;
   a.download = "MyRecording.mp4"; // a의 다운로드 기능
   document.body.appendChild(a);
   a.click(); // 사용자가 클릭한 것처럼 할 수 있음
+
+  const thumbA = document.createElement("a");
+  thumbA.href = thumbUrl;
+  thumbA.download = "MyThumbnail.jpg";
+  document.body.appendChild(thumbA);
+  thumbA.click();
 };
 
 const handleStop = () => {
