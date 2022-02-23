@@ -135,6 +135,7 @@ export const finishGithubLogin = async (req, res) => {
 };
 export const logout = (req, res) => {
   req.session.destroy(); // 세션 삭제 logout
+  req.flash("info", "Bye Bye");
   return res.redirect("/");
 };
 
@@ -167,6 +168,7 @@ export const postEdit = async (req, res) => {
 export const getChangePassword = (req, res) => {
   if (req.session.user.socialOnly === true) {
     // 소셜로그인 유저는 비밀번호를 바꿀 수 없으므로 redirect
+    req.flash("error", "Can't change password.");
     return res.redirect("/");
   }
   return res.render("users/change-password", { pageTitle: "Change Password" });
@@ -195,6 +197,7 @@ export const postChangePassword = async (req, res) => {
   user.password = newPassword;
   await user.save(); // save()를 써서 userSchem.pre("save")를 발동시킬 수 있음.
   req.session.destroy(); // 세션 삭제
+  req.flash("into", "Password updated.");
   return res.redirect("/users/logout");
 };
 
