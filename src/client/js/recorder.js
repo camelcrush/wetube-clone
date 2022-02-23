@@ -1,14 +1,32 @@
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-import { async } from "regenerator-runtime";
 
-const startBtn = document.getElementById("startBtn");
+const actionBtn = document.getElementById("actionBtn");
 const video = document.getElementById("preview");
 
 let stream;
 let recorder;
 let videoFile;
 
+const files = {
+  input: "recording.webm",
+  output: "output.mp4",
+  thumb: "thumbnail.jpg",
+};
+
+const downloadFile = (fileUrl, fileName) => {
+  const a = document.createElement("a");
+  a.href = fileUrl;
+  a.download = fileName; // a의 다운로드 기능
+  document.body.appendChild(a);
+  a.click(); // 사용자가 클릭한 것처럼 할 수 있음
+};
+
 const handleDownload = async () => {
+  // 변환중 유저가 다시 다운로드 버튼 못 누르도록 바꾸기
+  actionBtn.removeEventListener("click", handleDownload);
+  actionBtn.innerText = "Transcoding...";
+  actionBtn.disabled = true;
+
   // ffmpeg 생성: ffmpeg는 브라우저에서 사용자 pc를 사용하여 비디오를 converting하는 software
   const ffmpeg = createFFmpeg({
     corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
@@ -17,23 +35,23 @@ const handleDownload = async () => {
   await ffmpeg.load(); // 사용자가 사용하기 때문에 preload
 
   // FS(filse system): 파일시스템에 blob 파일을 받아 파일 생성
-  ffmpeg.FS("writeFile", "recording.webm", await fetchFile(videoFile));
+  ffmpeg.FS("writeFile", files.input, await fetchFile(videoFile));
 
   // mp4로 converting
-  await ffmpeg.run("-i", "recording.webm", "-r", "60", "output.mp4");
+  await ffmpeg.run("-i", files.input, "-r", "60", files.output);
   await ffmpeg.run(
     "-i",
-    "recording.webm",
+    files.input,
     "-ss",
     "00:00:01",
     "-frames:v",
     "1",
-    "thumbnail.jpg"
+    files.thumb
   );
 
   // 파일시스템으로부터 mp4 output 불러오기(binary data)
-  const mp4File = ffmpeg.FS("readFile", "output.mp4");
-  const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
+  const mp4File = ffmpeg.FS("readFile", files.output);
+  const thumbFile = ffmpeg.FS("readFile", files.thumb);
 
   // 브라우저가 이해할 수 있는 blob 파일로 전환(mp4File.buffer 필수)
   const mp4Blob = new Blob([mp4File.buffer], { type: "video/mp4" });
@@ -43,32 +61,38 @@ const handleDownload = async () => {
   const mp4Url = URL.createObjectURL(mp4Blob);
   const thumbUrl = URL.createObjectURL(thumbBlob);
 
-  const a = document.createElement("a");
-  a.href = mp4Url;
-  a.download = "MyRecording.mp4"; // a의 다운로드 기능
-  document.body.appendChild(a);
-  a.click(); // 사용자가 클릭한 것처럼 할 수 있음
+  downloadFile(mp4Url, "MyRecording.mp4");
+  downloadFile(thumbUrl, "MyThumbnail.jpg");
 
-  const thumbA = document.createElement("a");
-  thumbA.href = thumbUrl;
-  thumbA.download = "MyThumbnail.jpg";
-  document.body.appendChild(thumbA);
-  thumbA.click();
+  // 브라우저 메모리 최적화를 위해 파일들 삭제
+  ffmpeg.FS("unlink", files.input);
+  ffmpeg.FS("unlink", files.output);
+  ffmpeg.FS("unlink", files.thumb);
+
+  URL.revokeObjectURL(mp4Url);
+  URL.revokeObjectURL(thumbUrl);
+  URL.revokeObjectURL(videoFile);
+
+  // 다운로드가 완료되면 다시 record 기능 추가
+  actionBtn.disabled = false;
+  actionBtn.innerText = "Record Again";
+  actionBtn.addEventListener("click", handleStart);
+  init();
 };
 
 const handleStop = () => {
-  startBtn.innerText = "Download Recording";
-  startBtn.removeEventListener("click", handleStop);
-  startBtn.addEventListener("click", handleDownload);
+  actionBtn.innerText = "Download Recording";
+  actionBtn.removeEventListener("click", handleStop);
+  actionBtn.addEventListener("click", handleDownload);
 
   recorder.stop();
   // stop은 ondataavailable 이벤트를 발생 시키고 blob(video file)을 반환함
 };
 
 const handleStart = () => {
-  startBtn.innerText = "Stop Recording";
-  startBtn.removeEventListener("click", handleStart);
-  startBtn.addEventListener("click", handleStop);
+  actionBtn.innerText = "Stop Recording";
+  actionBtn.removeEventListener("click", handleStart);
+  actionBtn.addEventListener("click", handleStop);
 
   recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
   // stream을 받아 recording
@@ -95,4 +119,4 @@ const init = async () => {
 
 init();
 
-startBtn.addEventListener("click", handleStart);
+actionBtn.addEventListener("click", handleStart);
