@@ -25,6 +25,6 @@ videoRouter
   .route("/upload")
   .all(protectorMiddleware)
   .get(getUpload)
-  .post(videoUpload.single("video"), postUpload);
-
+  .post(videoUpload.fields([{ name: "video" }, { name: "thumb" }]), postUpload);
+// multer fields는 여러 파일을 업로드 하는 기능
 export default videoRouter;
