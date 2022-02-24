@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import morgan from "morgan";
 import session from "express-session";
 import MongoStore from "connect-mongo";
@@ -16,7 +16,7 @@ app.set("view engine", "pug"); // view engine으로 pug 설정하기
 app.set("views", process.cwd() + "/src/views"); // views 디폴트값을 src폴더 안의 views폴더로 설정하기, cwd()는 current working directory
 app.use(logger);
 app.use(express.urlencoded({ extended: true })); // express는 request post body data를 객체 형태로 변환하여 받기 위해 Middleware 설정이 필요함
-
+app.use(express.json()); // fetch dat를 json 파일로 바꿔주는 미들웨어
 app.use((req, res, next) => {
   res.header("Cross-Origin-Embedder-Policy", "require-corp");
   res.header("Cross-Origin-Opener-Policy", "same-origin");

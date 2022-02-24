@@ -11,6 +11,7 @@ const videoContainer = document.getElementById("videoContainer");
 const fullScreenBtn = document.getElementById("fullScreen");
 const fullSCreenBtnIcon = fullScreenBtn.querySelector("i");
 const videoControls = document.getElementById("videoControls");
+const textarea = document.getElementById("textarea");
 
 let controlsTimeout = null; // Timeout 전역변수 설정
 let controlsMovementTimeout = null; // mouse timeout 전역변수 설정
@@ -116,7 +117,8 @@ const handleMouseLeave = () => {
 };
 
 const handleSpacebar = (event) => {
-  if (event.keyCode == 32) {
+  // comment 입력할 때 space 누르면 영상이 정지/지생 되서 코드 수정
+  if (event.target !== textarea && event.keyCode == 32) {
     // spacebar keycode값 32
     handlePlayClick();
   }
