@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
   password: { type: String },
   name: { type: String, require: true },
   location: { type: String },
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }], // ref: 모델명
 });
 
