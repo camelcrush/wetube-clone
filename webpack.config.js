@@ -11,8 +11,6 @@ module.exports = {
     recorder: BASE_JS + "recorder.js",
     commentSection: BASE_JS + "commentSection.js",
   }, // src에 있는 변환할 코드
-  mode: "development", // mode: dev인지 product인지에 따라 컴파일되는 코드 결과가 달라짐, 개발중일 땐 개발 모드
-  watch: true, // watch
   plugins: [
     new MiniCssExtractPlugin({
       filename: "css/styles.css",
