@@ -69,8 +69,8 @@ export const postUpload = async (req, res) => {
     const newVideo = await Video.create({
       title,
       description,
-      fileUrl: video[0].path,
-      thumbUrl: thumb[0].path,
+      fileUrl: video[0].location, // multer-s3에는 location이 주소가 됨
+      thumbUrl: thumb[0].location,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });

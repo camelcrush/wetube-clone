@@ -1,4 +1,22 @@
 import multer from "multer";
+import multerS3 from "multer-s3";
+import aws from "aws-sdk";
+
+// aws s3-sdk 로 엑세스 key 설정
+const s3 = new aws.S3({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS,
+    secretAccessKey: process.env.AWS_SECRET,
+  },
+});
+
+// multer-s3: s3 전용 multer
+// acl: access control list: 객체에 대한 권한 설정
+const multerUploader = multerS3({
+  s3: s3,
+  acl: "public-read",
+  bucket: "wetube-camelcrush",
+});
 
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn); // 로그인 정보를 브라우저 로컬 저장소에 저장
@@ -34,10 +52,12 @@ export const avatarUpload = multer({
   limits: {
     fileSize: 3000000,
   },
+  storage: multerUploader,
 });
 export const videoUpload = multer({
   dest: "uploads/videos",
   limits: {
     fileSize: 100000000,
   },
+  storage: multerUploader,
 });
