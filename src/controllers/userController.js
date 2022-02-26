@@ -134,8 +134,8 @@ export const finishGithubLogin = async (req, res) => {
   }
 };
 export const logout = (req, res) => {
-  req.session.destroy(); // 세션 삭제 logout
   req.flash("info", "Bye Bye");
+  req.session.destroy(); // 세션 삭제 logout
   return res.redirect("/");
 };
 

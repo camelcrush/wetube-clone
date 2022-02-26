@@ -149,5 +149,5 @@ export const createComment = async (req, res) => {
   // const userDb = await User.findById(user._id);
   // userDb.comments.push(comment._id); // 유저 객체에 코멘트 추가
   // userDb.save();
-  return res.sendStatus(201);
+  return res.status(201).json({ newCommentId: comment._id });
 };
