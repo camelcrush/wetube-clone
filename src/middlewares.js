@@ -82,7 +82,7 @@ export const s3DeleteAvatarMiddleware = (req, res, next) => {
   s3.deleteObject(
     {
       Bucket: "wetube-camelcrush",
-      Key: `images/${req.session.user.avatarUrl.split("/")[4]}`,
+      Key: `images/${req.session.user.avatarUrl.split("/")[3]}`,
     },
     (err, data) => {
       if (err) {
