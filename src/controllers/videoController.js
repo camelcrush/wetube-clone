@@ -65,12 +65,13 @@ export const postUpload = async (req, res) => {
   } = req.session;
   const { video, thumb } = req.files; // fields 기능을 쓰면 req.files에 데이터가 옴
   const { title, description, hashtags } = req.body;
+  const isHeroku = process.env.NODE_ENV === "production";
   try {
     const newVideo = await Video.create({
       title,
       description,
-      fileUrl: video[0].location, // multer-s3에는 location이 주소가 됨
-      thumbUrl: thumb[0].location,
+      fileUrl: isHeroku ? video[0].location : video[0].path, // multer-s3에는 location이 주소가 됨
+      thumbUrl: isHeroku ? thumb[0].location : thumb[0].path,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });
