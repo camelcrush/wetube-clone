@@ -76,6 +76,9 @@ export const s3DeleteAvatarMiddleware = (req, res, next) => {
   if (!req.file) {
     next();
   }
+  if (!req.session.user.avatarUrl) {
+    next();
+  }
   s3.deleteObject(
     {
       Bucket: "wetube-camelcrush",
