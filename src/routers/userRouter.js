@@ -23,7 +23,7 @@ userRouter
   .route("/edit")
   .all(protectorMiddleware)
   .get(getEdit)
-  .post(s3DeleteAvatarMiddleware, avatarUpload.single("avatar"), postEdit); // 필드이름 avatar는 form name과 같아야함
+  .post(avatarUpload.single("avatar"), s3DeleteAvatarMiddleware, postEdit); // 필드이름 avatar는 form name과 같아야함
 userRouter
   .route("/change-password")
   .get(getChangePassword)

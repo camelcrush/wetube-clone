@@ -74,15 +74,15 @@ export const videoUpload = multer({
 // s3 아바타 이미지 삭제하기
 export const s3DeleteAvatarMiddleware = (req, res, next) => {
   if (!req.file) {
-    next();
+    return next();
   }
   if (!req.session.user.avatarUrl) {
-    next();
+    return next();
   }
   s3.deleteObject(
     {
       Bucket: "wetube-camelcrush",
-      Key: `images/${req.session.user.avatarUrl.split("/")[3]}`,
+      Key: `images/${req.session.user.avatarUrl.split("/")[4]}`,
     },
     (err, data) => {
       if (err) {
