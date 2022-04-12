@@ -70,6 +70,7 @@ export const postUpload = async (req, res) => {
   const { video, thumb } = req.files; // fields 기능을 쓰면 req.files에 데이터가 옴
   const { title, description, hashtags } = req.body;
   const isHeroku = process.env.NODE_ENV === "production";
+  console.log(video);
   try {
     const newVideo = await Video.create({
       title,

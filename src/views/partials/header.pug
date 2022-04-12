@@ -17,10 +17,9 @@ header
                     a(href=`/users/${loggedInUser._id}`)
                         if !loggedInUser.avatarUrl
                             span 😀
-                        else if loggedInUser.socialOnly
-                            img.header__avatar(src="/"+loggedInUser.avatarUrl, crossorigin)
-                        else
+                        else loggedInUser.socialOnly
                             img.header__avatar(src=loggedInUser.avatarUrl, crossorigin)
+                        
 
             else
                 li
