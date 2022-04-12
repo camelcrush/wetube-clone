@@ -11,7 +11,7 @@ const s3 = new aws.S3({
 });
 // 헤로쿠에서의 환경변수 값 (로컬에서는 없음)
 const isHeroku = process.env.NODE_ENV === "production";
-
+console.log(isHeroku);
 // multer-s3: s3 전용 multer
 // acl: access control list: 객체에 대한 권한 설정
 const s3ImageUploader = multerS3({

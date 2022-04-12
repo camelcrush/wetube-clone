@@ -1,6 +1,7 @@
 import User from "../models/User";
 import Video from "../models/Video"; // 모델 import
 import Comment from "../models/Comment";
+import { async } from "regenerator-runtime";
 
 export const home = async (req, res) => {
   const videos = await Video.find({})
@@ -10,7 +11,10 @@ export const home = async (req, res) => {
 };
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id).populate("owner").populate("comments"); // populate(필드명)는 relation 데이터를 추가해 줌.
+  const video = await Video.findById(id)
+    .populate("owner")
+    .populate({ path: "comments", populate: { path: "owner" } }); // populate(필드명)는 relation 데이터를 추가해 줌.
+  console.log(video);
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video is not found" });
   }
@@ -93,6 +97,7 @@ export const deleteVideo = async (req, res) => {
   const {
     user: { _id },
   } = req.session;
+  const user = await User.findById(_id);
   const video = await Video.findById(id);
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found." });
@@ -103,6 +108,7 @@ export const deleteVideo = async (req, res) => {
   }
   await Video.findByIdAndDelete(id);
   user.videos.splice(user.videos.indexOf(id), 1); // user videos 삭제
+  user.save();
   return res.redirect("/");
 };
 
@@ -147,8 +153,37 @@ export const createComment = async (req, res) => {
   });
   video.comments.push(comment._id);
   video.save();
-  // const userDb = await User.findById(user._id);
-  // userDb.comments.push(comment._id); // 유저 객체에 코멘트 추가
-  // userDb.save();
+  const userDb = await User.findById(user._id);
+  userDb.comments.push(comment._id); // 유저 객체에 코멘트 추가
+  userDb.save();
   return res.status(201).json({ newCommentId: comment._id });
+};
+
+export const deleteComment = async (req, res) => {
+  const {
+    user: { _id },
+  } = req.session;
+  const { id, commentId } = req.params;
+  const user = await User.findById(_id);
+  const video = await Video.findById(id);
+  if (!video) {
+    req.flash("error", "Not found");
+    return res.status(404).redirect(`/`);
+  }
+  const comment = await Comment.findById(commentId);
+  if (!comment) {
+    req.flash("error", "Not found");
+    return res.status(404).redirect(`/videos/${id}`);
+  }
+  if (String(user._id) !== String(comment.owner)) {
+    req.flash("error", "Not authorized");
+    return res.status(403).redirect(`/videos/${id}`);
+  }
+  await Comment.findByIdAndDelete(commentId);
+  video.comments.splice(video.comments.indexOf(commentId), 1);
+  video.save();
+  user.comments.splice(user.comments.indexOf(commentId), 1);
+  user.save();
+  req.flash("success", "Success");
+  return res.redirect(`/videos/${id}`);
 };

@@ -3,21 +3,30 @@ import { async } from "regenerator-runtime";
 const videoContainer = document.getElementById("videoContainer");
 const form = document.getElementById("commentForm");
 
-const addComment = (text, id) => {
+const addComment = (text, commentId, videoId) => {
   // js로 코멘트 추가하기 like realtime
   const videoComments = document.querySelector(".video__comments ul");
   const newComment = document.createElement("li");
-  newComment.dataset.id = id; // 코멘트 id 추가하기
+  newComment.dataset.id = commentId; // 코멘트 id 추가하기
+  newComment.dataset.videoId = videoId;
   newComment.className = "video__comment"; // 같은 css 적용을 위해
+  const div = document.createElement("div");
+  const username = document.createElement("span");
+  username.innerText = `${form.dataset.username}  `;
+  div.appendChild(username);
   const icon = document.createElement("i");
   icon.className = "fas fa-comment";
-  const span = document.createElement("span");
-  span.innerText = `  ${text}`;
-  const span2 = document.createElement("span");
-  span.innerText = " ❌";
-  newComment.appendChild(icon);
-  newComment.appendChild(span);
-  newComment.appendChild(span2);
+  div.appendChild(icon);
+  newComment.appendChild(div);
+  const comment = document.createElement("span");
+  comment.innerText = ` ${text}`;
+  newComment.appendChild(comment);
+  const deleteBtn2 = document.createElement("button");
+  const a = document.createElement("a");
+  a.href = `/api/videos/${videoId}/comments/${commentId}/delete`;
+  a.innerText = " Delete";
+  deleteBtn2.appendChild(a);
+  newComment.appendChild(deleteBtn2);
   videoComments.prepend(newComment); // 앞으로 달기
 };
 
@@ -41,7 +50,7 @@ const handleSubmit = async (event) => {
   textarea.value = "";
   if (response.status === 201) {
     const { newCommentId } = await response.json();
-    addComment(text, newCommentId);
+    addComment(text, newCommentId, videoId);
   }
 };
 

@@ -135,7 +135,8 @@ export const finishGithubLogin = async (req, res) => {
 };
 export const logout = (req, res) => {
   req.flash("info", "Bye Bye");
-  req.session.destroy(); // 세션 삭제 logout
+  req.session.loggedIn = false;
+  // req.session.destroy(); // 세션 삭제 logout but flash가 안됨
   return res.redirect("/");
 };
 
@@ -197,9 +198,11 @@ export const postChangePassword = async (req, res) => {
   }
   user.password = newPassword;
   await user.save(); // save()를 써서 userSchem.pre("save")를 발동시킬 수 있음.
-  req.session.destroy(); // 세션 삭제
-  req.flash("into", "Password updated.");
-  return res.redirect("/users/logout");
+  req.flash("info", "Password updated.");
+  req.session.loggendIn = false;
+  // 세션 삭제
+  // req.session.destroy();
+  return res.redirect("/login");
 };
 
 export const see = async (req, res) => {

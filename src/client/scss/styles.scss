@@ -66,4 +66,12 @@ main {
     background-color: tomato;
     color: white;
   }
+  &.info {
+    background-color: aquamarine;
+    color: gray;
+  }
+  &.success {
+    background-color: cornflowerblue;
+    color: cornsilk;
+  }
 }
